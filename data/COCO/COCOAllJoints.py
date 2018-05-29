@@ -13,13 +13,13 @@ from pycocotools.coco import COCO
 
 class COCOJoints(object):
     def __init__(self):
-        cur_dir = os.path.dirname(os.path.abspath(__file__))
+        root_data_dir="/home/data/COCO/MSCOCO/"
         self.kp_names = ['nose', 'l_eye', 'r_eye', 'l_ear', 'r_ear', 'l_shoulder',
         'r_shoulder', 'l_elbow', 'r_elbow', 'l_wrist', 'r_wrist',
         'l_hip', 'r_hip', 'l_knee', 'r_knee', 'l_ankle', 'r_ankle']
         self.max_num_joints = 17
         self.color = np.random.randint(0, 256, (self.max_num_joints, 3))
-
+        
         self.mpi = []
         self.test_mpi = []
         for mpi, stage in zip([self.mpi, self.test_mpi], ['train', 'val']):
@@ -42,13 +42,13 @@ class COCOJoints(object):
                     bbox = ann['bbox']
                     if np.sum(joints[2::3]) == 0 or ann['num_keypoints'] == 0 :
                         continue
-                    imgname = cur_dir+"/MSCOCO/"+stage + '2017/' + str(ann['image_id']).zfill(12) + '.jpg'
+                    imgname = root_data_dir+stage + '2017/' + str(ann['image_id']).zfill(12) + '.jpg'
                     humanData = dict(aid = aid,joints=joints, imgpath=imgname, headRect=rect, bbox=bbox, imgid = ann['image_id'], segmentation = ann['segmentation'])
                     mpi.append(humanData)
             elif stage == 'val':
                 files = [(img_id,coco.imgs[img_id]) for img_id in coco.imgs]
                 for img_id,img_info in files:
-                    imgname = cur_dir+"/MSCOCO/"+stage + '2017/' + str(img_info['file_name']).zfill(12) + '.jpg'
+                    imgname =root_data_dir+stage + '2017/' +str(img_info['file_name']).zfill(12) + '.jpg'
                     humanData = dict(imgid = img_id,imgpath = imgname)
                     mpi.append(humanData)
             else:

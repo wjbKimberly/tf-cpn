@@ -18,3 +18,4 @@ scipy>=0.13.2
 
 matplotlib
 jupyter
+screen

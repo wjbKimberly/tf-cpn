@@ -9,7 +9,7 @@ class Config:
     cur_dir = os.path.dirname(os.path.abspath(__file__))
     this_dir_name = cur_dir.split('/')[-1]
     root_dir = os.path.join(cur_dir, '..', '..')
-
+    root_data_dir="/home"
     proj_name = this_dir_name
 
     # output path
@@ -51,10 +51,10 @@ class Config:
         print('>>> Using /gpu:{}'.format(self.gpu_ids))
 
     bn_train = True
-    init_model = osp.join(root_dir, 'data', 'imagenet_weights', 'res101.ckpt')
+    init_model = osp.join(root_data_dir, 'data', 'imagenet_weights', 'resnet_v1_101.ckpt')
 
     nr_skeleton = 17
-    img_path = os.path.join(root_dir, 'data', 'COCO', 'MSCOCO', 'images')
+    img_path = os.path.join(root_data_dir, 'data', 'COCO', 'MSCOCO', 'images')
     symmetry = [(1, 2), (3, 4), (5, 6), (7, 8), (9, 10), (11, 12), (13, 14), (15, 16)]
 
     imgExtXBorder = 0.1
@@ -77,15 +77,15 @@ class Config:
     gk9 = (13, 13)
     gk7 = (9, 9)
 
-    gt_path = osp.join(root_dir, 'data', 'COCO', 'MSCOCO', 'annotations', 'person_keypoints_minival2014.json')
-    det_path = osp.join(root_dir, 'data', 'COCO', 'dets', 'person_detection_minival411_human553.json')
+    gt_path = osp.join(root_data_dir, 'data', 'COCO', 'MSCOCO', 'annotations', 'person_keypoints_minival2014.json')
+    det_path = osp.join(root_data_dir, 'data', 'COCO', 'dets', 'person_detection_minival411_human553.json')
 
 cfg = Config()
 
 sys.path.insert(0, osp.join(cfg.root_dir, 'lib'))
 from tfflat.utils import add_pypath, make_link, make_dir
-add_pypath(osp.join(cfg.root_dir, 'data'))
-add_pypath(osp.join(cfg.root_dir, 'data', 'COCO'))
+add_pypath(osp.join(cfg.root_data_dir, 'data'))
+add_pypath(osp.join(cfg.root_data_dir, 'data', 'COCO'))
 
 make_link(cfg.output_dir, './log')
 make_dir(cfg.output_dir)

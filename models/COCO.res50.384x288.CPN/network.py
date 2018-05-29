@@ -79,7 +79,7 @@ class Network(ModelDesc):
 
         d = COCOJoints()
         train_data, _ = d.load_data(cfg.min_kps)
-
+        print(train_data)
         from tfflat.data_provider import DataFromList, MultiProcessMapDataZMQ, BatchData, MapData
         dp = DataFromList(train_data)
         if cfg.dpflow_enable:

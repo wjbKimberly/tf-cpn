@@ -17,5 +17,5 @@ numpy>=1.7.1
 scipy>=0.13.2
 
 matplotlib
-jupyter
-screen
+opencv-python
+pycocotools

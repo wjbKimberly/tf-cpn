@@ -15,3 +15,5 @@ easydict
 Cython>=0.19.2
 numpy>=1.7.1
 scipy>=0.13.2
+
+matplotlib

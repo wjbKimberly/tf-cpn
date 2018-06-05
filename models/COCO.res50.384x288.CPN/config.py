@@ -77,9 +77,10 @@ class Config:
     gk9 = (13, 13)
     gk7 = (9, 9)
 
-    gt_path = osp.join(root_data_dir, 'data', 'COCO', 'MSCOCO', 'annotations', 'person_keypoints_minival2014.json')
-    det_path = osp.join(root_data_dir, 'data', 'COCO', 'dets', 'person_detection_minival411_human553.json')
-
+    #gt_path = osp.join(root_data_dir, 'data', 'COCO', 'MSCOCO', 'annotations', 'person_keypoints_minival2014.json')
+    #det_path = osp.join(root_data_dir, 'data', 'COCO', 'dets', 'person_detection_minival411_human553.json')
+    gt_path = osp.join(root_data_dir, 'data', 'COCO', 'MSCOCO', 'annotations', 'person_keypoints_val2017.json')
+    det_path = osp.join(root_data_dir, 'data', 'COCO', 'MSCOCO', 'annotations', 'person_keypoints_val2017.json')
 cfg = Config()
 
 sys.path.insert(0, osp.join(cfg.root_dir, 'lib'))

@@ -14,7 +14,7 @@ from tfflat.utils import mem_info
 from tfflat.logger import colorlogger
 from network import Network
 
-from lib_kernel.lib_nms.gpu_nms import gpu_nms
+#from lib_kernel.lib_nms.gpu_nms import gpu_nms
 from lib_kernel.lib_nms.cpu_nms import cpu_soft_nms
 from dataset import Preprocessing
 from COCOAllJoints import COCOJoints
@@ -167,6 +167,57 @@ def test_net(tester, logger, dets, det_range):
 
     return all_res, dump_results
 
+def validate(test_model, logger):
+    eval_gt = COCO(cfg.gt_path)
+    
+    #get validation
+    import json
+    with open(cfg.det_path, 'r') as f:
+        dets = json.load(f)["annotations"]
+    
+    
+    root_data_dir="/home/data/COCO/MSCOCO/"
+    dets = [i for i in dets if i['image_id'] in eval_gt.imgs]
+    dets = [i for i in dets if i['category_id'] == 1]
+    dets.sort(key=lambda x: x['image_id'], reverse=True)
+    for i in dets:
+        i['imgpath'] = root_data_dir + 'val2017/' +str(i['image_id']).zfill(12) + '.jpg'
+        i['score'] = 1.
+    img_num = len(np.unique([i['image_id'] for i in dets]))
+
+    from tfflat.mp_utils import MultiProc
+    img_start = 0
+    ranges = [0]
+    images_per_gpu = int(img_num / len(args.gpu_ids.split(','))) + 1
+    for run_img in range(img_num):
+        img_end = img_start + 1
+        while img_end < len(dets) and dets[img_end]['image_id'] == dets[img_start]['image_id']:
+            img_end += 1
+        if (run_img + 1) % images_per_gpu == 0 or (run_img + 1) == img_num:
+            ranges.append(img_end)
+        img_start = img_end
+
+    def func(id):
+        cfg.set_args(args.gpu_ids.split(',')[id])
+        tester = Tester(Network(), cfg)
+        tester.load_weights(test_model)
+        range = [ranges[id], ranges[id + 1]]
+        return test_net(tester, logger, dets, range)
+
+    MultiGPUFunc = MultiProc(len(args.gpu_ids.split(',')), func)
+    all_res, dump_results = MultiGPUFunc.work()
+
+    # evaluation
+    result_path = osp.join(cfg.output_dir, 'results.json')
+    with open(result_path, 'w') as f:
+        json.dump(dump_results, f)
+
+    eval_dt = eval_gt.loadRes(result_path)
+    cocoEval = COCOeval(eval_gt, eval_dt, iouType='keypoints')
+
+    cocoEval.evaluate()
+    cocoEval.accumulate()
+    cocoEval.summarize()
 
 def test(test_model, logger):
     eval_gt = COCO(cfg.gt_path)
@@ -262,11 +313,20 @@ if __name__ == '__main__':
     global args
     args = parse_args()
 
+#     if args.test_model:
+#         logger = colorlogger(cfg.output_dir, 'test_model_{}'.format(args.test_model.split('/')[-1].split('.')[0]))
+#         test(args.test_model, logger)
+#     else:
+#         for i in range(*eval(args.test_epochs)):
+#             log_name = 'test_epoch_{}.logs'.format(i)
+#             logger = colorlogger(cfg.output_dir, log_name)
+#             test(i, logger)
+
     if args.test_model:
         logger = colorlogger(cfg.output_dir, 'test_model_{}'.format(args.test_model.split('/')[-1].split('.')[0]))
-        test(args.test_model, logger)
+        validate(args.test_model, logger)
     else:
         for i in range(*eval(args.test_epochs)):
             log_name = 'test_epoch_{}.logs'.format(i)
             logger = colorlogger(cfg.output_dir, log_name)
-            test(i, logger)
+            validate(i, logger)

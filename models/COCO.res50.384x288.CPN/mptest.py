@@ -26,6 +26,7 @@ from pycocotools import mask as COCOmask
 def test_net(tester, logger, dets, det_range):
     # here we assume all boxes are pre-processed.
     nms_method = 'nms'
+    nms_method = 'soft'
     nms_thresh = 1.
     min_scores = 1e-10
     min_box_size = 0.  # 8 ** 2

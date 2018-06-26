@@ -14,7 +14,7 @@ from tfflat.utils import mem_info
 from tfflat.logger import colorlogger
 from network import Network
 
-#from lib_kernel.lib_nms.gpu_nms import gpu_nms
+from lib_kernel.lib_nms.gpu_nms import gpu_nms
 from lib_kernel.lib_nms.cpu_nms import cpu_soft_nms
 from dataset import Preprocessing
 from COCOAllJoints import COCOJoints

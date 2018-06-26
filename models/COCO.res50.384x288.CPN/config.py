@@ -63,9 +63,11 @@ class Config:
 
     use_seg = False
 
-    data_aug = True # has to be true
-    nr_aug = 4
-
+    data_aug = False # has to be true
+    if data_aug:
+        nr_aug = 4
+    else:
+        nr_aug=1
     pixel_means = np.array([[[102.9801, 115.9465, 122.7717]]]) # BGR
     pixel_norm = True
     data_shape = (384, 288) #height, width

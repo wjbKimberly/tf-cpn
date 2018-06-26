@@ -248,11 +248,24 @@ def Preprocessing(d, stage='train'):
     img = img.transpose(2, 0, 1)
     imgs.append(img)
     if 'joints' in d:
+        
         labels.append(label.reshape(-1))
         valids.append(valid.reshape(-1))
 
     if stage == 'train':
-        imgs, labels, valids = data_augmentation(imgs, labels, valids)
+#         import sys
+#         savedStdout = sys.stdout  #保存标准输出流
+#         file= open('out.txt', 'a')
+#         sys.stdout = file  #标准输出重定向至文件
+#         print(len(imgs), len(labels), len(valids))
+#         print(imgs[0].shape, labels[0].shape, valids[0].shape)
+        imgs, labels, valids=np.asarray(imgs),np.asarray(labels),np.asarray(valids)
+        if cfg.data_aug:
+            imgs, labels, valids = data_augmentation(imgs, labels, valids)
+#         print(len(imgs), len(labels), len(valids))
+#         print(imgs[0].shape, labels[0].shape, valids[0].shape)
+        
+#         sys.stdout = savedStdout  #恢复标准输出流
         heatmaps15 = joints_heatmap_gen(imgs, labels, cfg.output_shape, cfg.data_shape, return_valid=False,
                                         gaussian_kernel=cfg.gk15)
         heatmaps11 = joints_heatmap_gen(imgs, labels, cfg.output_shape, cfg.data_shape, return_valid=False,
@@ -261,7 +274,6 @@ def Preprocessing(d, stage='train'):
                                        gaussian_kernel=cfg.gk9)
         heatmaps7 = joints_heatmap_gen(imgs, labels, cfg.output_shape, cfg.data_shape, return_valid=False,
                                        gaussian_kernel=cfg.gk7)
-
         return [imgs.astype(np.float32).transpose(0, 2, 3, 1),
                 heatmaps15.astype(np.float32).transpose(0, 2, 3, 1),
                 heatmaps11.astype(np.float32).transpose(0, 2, 3, 1),

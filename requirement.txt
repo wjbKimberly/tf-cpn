@@ -19,3 +19,4 @@ scipy>=0.13.2
 matplotlib
 opencv-python
 pycocotools
+Cython

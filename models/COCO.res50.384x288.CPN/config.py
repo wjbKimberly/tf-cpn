@@ -10,6 +10,7 @@ class Config:
     this_dir_name = cur_dir.split('/')[-1]
     root_dir = os.path.join(cur_dir, '..', '..')
     root_data_dir="/home"
+    root_data_dir="."
     proj_name = this_dir_name
 
     # output path

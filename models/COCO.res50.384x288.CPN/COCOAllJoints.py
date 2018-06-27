@@ -14,6 +14,7 @@ from pycocotools.coco import COCO
 class COCOJoints(object):
     def __init__(self):
         root_data_dir="/home/data/COCO/MSCOCO/"
+        root_data_dir="./data/COCO/MSCOCO/"
         self.kp_names = ['nose', 'l_eye', 'r_eye', 'l_ear', 'r_ear', 'l_shoulder',
         'r_shoulder', 'l_elbow', 'r_elbow', 'l_wrist', 'r_wrist',
         'l_hip', 'r_hip', 'l_knee', 'r_knee', 'l_ankle', 'r_ankle']
